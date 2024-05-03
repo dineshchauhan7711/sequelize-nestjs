@@ -1,6 +1,9 @@
 import { Sequelize } from 'sequelize-typescript';
 import { Config } from "../config/config";
 
+// Models
+import { User } from "../../module/users/user.entity";
+import { UserSession } from "../../module/users/user_session.entity";
 
 export const databaseProviders = [
      {
@@ -15,6 +18,7 @@ export const databaseProviders = [
                     dialect: Config.database.dialect,
                     logging: false
                });
+               sequelize.addModels([User, UserSession]);
                sequelize.authenticate()
                     .then(() => console.log('Connected to database!'))
                     .catch(err => console.log(err));

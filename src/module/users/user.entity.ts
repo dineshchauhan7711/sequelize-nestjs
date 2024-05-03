@@ -1,13 +1,14 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
 
 @Table
 export class User extends Model<User> {
-
+    @PrimaryKey
+    @AutoIncrement
     @Column({
         type: DataType.BIGINT,
         allowNull: false
     })
-    id?: number;
+    id: number;
 
     @Column({
         type: DataType.STRING,

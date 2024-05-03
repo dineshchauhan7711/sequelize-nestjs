@@ -1,6 +1,11 @@
 import { IsEmail, IsString, MinLength, IsNotEmpty, ValidateIf } from 'class-validator';
 
 
+interface Gender {
+    male: string;
+    female: string;
+}
+
 
 /**
  * Register User DTO
@@ -13,7 +18,7 @@ export class RegisterUserDTO {
     @IsNotEmpty({
         message: 'FirstName is required'
     })
-    firstName: string;
+    name: string;
 
 
     /**
@@ -21,9 +26,9 @@ export class RegisterUserDTO {
      */
     @IsString()
     @IsNotEmpty({
-        message: 'LastName is required'
+        message: 'Gender is required'
     })
-    lastName: string;
+    gender: Gender;
 
 
     /**

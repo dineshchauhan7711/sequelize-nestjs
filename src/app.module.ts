@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { databaseProviders } from './core/database/database.providers';
+import { DatabaseModule } from './core/database/database.module';
 import { ConfigModule } from '@nestjs/config';
+
+import { UsersModule } from "./module/users/users.module";
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true })
+    ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
+    UsersModule
   ],
-  controllers: [AppController],
-  providers: [AppService, ...databaseProviders],
-  exports: [...databaseProviders],
+  controllers: [],
+  providers: [],
+  exports: [],
 })
 export class AppModule { }

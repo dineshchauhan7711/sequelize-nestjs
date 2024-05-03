@@ -1,20 +1,19 @@
 
-import { Injectable, NestMiddleware, Header } from '@nestjs/common';
+import { Injectable, NestMiddleware, Inject } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 
 // //DTO
 import { HeaderDTO } from "./auth.dto";
 
 // Response
-import { errorResponse } from '../../helper/response';
+import { errorResponse } from '../../response/response';
 
 // Models
-import { User, UserDocument } from "../../model/user.model";
-import { UserSession, UserSessionDocument } from "../../model/user_session.model";
+import { User } from "../../../module/users/user.entity";
+import { UserSession } from "../../../module/users/user_session.entity";
+
 // JWT 
 import { JwtService } from "../../helper/jwt";
 
@@ -22,7 +21,7 @@ declare global {
      namespace Express {
           interface Request {
                user: {
-                    id: string;
+                    id: number;
                };
           }
      }
@@ -33,8 +32,8 @@ declare global {
 export class AuthMiddleware implements NestMiddleware {
      constructor(
           // Models
-          @InjectModel(User.name) private UserModel: Model<UserDocument>,
-          @InjectModel(UserSession.name) private UserSessionModel: Model<UserSessionDocument>,
+          @Inject(User) private readonly UserModel: typeof User,
+          @Inject(UserSession) private readonly UserSessionModel: typeof UserSession,
           // JWT
           private readonly jwtService: JwtService
      ) { }
@@ -56,19 +55,19 @@ export class AuthMiddleware implements NestMiddleware {
                };
 
                // Find authorization token
-               const findAuth = await this.UserSessionModel.findOne({ token: headerToken });
+               const findAuth = await this.UserSessionModel.findOne({ where: { token: headerToken } });
                if (!findAuth) {
                     return errorResponse(res, 1009)
                };
 
                // Find user
-               const findUser = await this.UserModel.findOne({ _id: findAuth.userId });
+               const findUser = await this.UserModel.findOne({ where: { id: findAuth.user_id } });
                if (!findUser) {
                     return errorResponse(res, 1009)
                };
 
                req.user = {
-                    id: findUser._id
+                    id: findUser.id
                }
 
                next();

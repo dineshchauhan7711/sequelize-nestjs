@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { compareSync } from "bcryptjs";
+import { compareSync, hashSync } from "bcryptjs";
 
 // Model
 import { User } from './user.entity';
@@ -15,10 +15,11 @@ import { JwtService } from "../../core/helper/jwt";
 @Injectable()
 export class UsersService {
     constructor(
-        @Inject(User) private readonly UserModel: typeof User,
-        @Inject(UserSession) private readonly UserSessionModel: typeof UserSession,
+        @Inject('User') private readonly UserModel: typeof User,
+        @Inject("UserSession") private readonly UserSessionModel: typeof UserSession,
         private readonly jwtService: JwtService
     ) { }
+
 
     /**
     * Login
@@ -59,5 +60,30 @@ export class UsersService {
             return errorResponse(res, 9999)
         }
     };
+
+    /**
+     * userRegister
+     */
+    async userRegister(req: Request, res: Response, body: any,): Promise<any> {
+        try {
+            const { name, gender, password } = body;
+            const email = (body.email).toLowerCase();
+            const findUser = await this.UserModel.findOne({ where: { email } });
+            if (findUser) {
+                return errorResponse(res, 1004)
+            };
+            await this.UserModel.create({
+                name,
+                gender,
+                email,
+                password: hashSync(password, 10)
+            })
+            return successResponse(res, 1001, null, 201)
+        } catch (error) {
+            console.log('error :>> ', error);
+            return errorResponse(res, 9999)
+        }
+    };
+
 
 }

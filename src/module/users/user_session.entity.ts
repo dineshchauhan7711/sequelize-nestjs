@@ -1,7 +1,10 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
 import { User } from "./user.entity";
 @Table
 export class UserSession extends Model<UserSession> {
+
+     @PrimaryKey
+     @AutoIncrement
      @Column({
           type: DataType.BIGINT,
           allowNull: false
