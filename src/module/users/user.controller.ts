@@ -12,17 +12,18 @@ export class UserController {
 
      /** 
       * Login
-     */
-     @Post()
+      */
+     @Post('/login')
      async Login(@Req() req: Request, @Res() res: Response, @Body() body: LoginDTO): Promise<any> {
           return this.UsersService.login(req, res, body);
      };
 
      /**
-     * Register User
-     */
+      * Register User
+      */
      @Post('/register-user')
      registerUser(@Req() req: Request, @Res() res: Response, @Body() body: RegisterUserDTO,): Promise<any> {
           return this.UsersService.userRegister(req, res, body)
      };
+     
 };

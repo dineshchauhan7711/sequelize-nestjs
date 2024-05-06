@@ -16,7 +16,7 @@ export class JwtService {
       */
      async generateJWTToken(object: { payload: object, expiry_time?: string }) {
           try {
-               const token = sign(object.payload, Config.secretKey, { ...(object.expiry_time) && { expiresIn: object.expiry_time } });
+               const token = sign(object.payload, Config.jwtSecretKey, { ...(object.expiry_time) && { expiresIn: object.expiry_time } });
 
                const response: JwtResponse = {
                     success: true,
